@@ -37,6 +37,7 @@ class AzureStorage(Storage):
     account_key = setting("AZURE_ACCOUNT_KEY")
     azure_container = setting("AZURE_CONTAINER")
     azure_ssl = setting("AZURE_SSL")
+    custom_domain = setting("AZURE_CUSTOM_DOMAIN")
 
     def __init__(self, *args, **kwargs):
         super(AzureStorage, self).__init__(*args, **kwargs)
@@ -99,7 +100,10 @@ class AzureStorage(Storage):
         return name
 
     def url(self, name):
-        if hasattr(self.connection, 'make_blob_url'):
+        if self.custom_domain:
+            return "{}://{}/{}/{}".format(
+                self.azure_protocol or 'http', self.custom_domain, self.azure_container, name)
+        elif hasattr(self.connection, 'make_blob_url'):
             return self.connection.make_blob_url(
                 container_name=self.azure_container,
                 blob_name=name,
