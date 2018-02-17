@@ -101,7 +101,7 @@ class AzureStorage(Storage):
 
     def url(self, name):
         if self.custom_domain:
-            return "{}://{}/{}/{}".format(
+            return u"{}://{}/{}/{}".format(
                 self.azure_protocol or 'http', self.custom_domain, self.azure_container, name)
         elif hasattr(self.connection, 'make_blob_url'):
             return self.connection.make_blob_url(
